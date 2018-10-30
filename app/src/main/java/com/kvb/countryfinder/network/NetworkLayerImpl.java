@@ -3,6 +3,7 @@ package com.kvb.countryfinder.network;
 import android.util.Log;
 
 import com.kvb.countryfinder.model.CountryDataBean;
+import com.kvb.countryfinder.view.OnCountryDetailsFetchedListener;
 import com.kvb.countryfinder.view.OnRegionDataFetchedListener;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class NetworkLayerImpl implements NetworkLayer {
     private static final String TAG = "NetworkLayerImpl";
 
     @Override
-    public void fetchCountrySpecificData(String countryName) {
+    public void fetchCountrySpecificData(String countryName, final OnCountryDetailsFetchedListener onCountryDetailsFetchedListener) {
         if(retrofitAPI == null) {
             retrofitAPI = RetrofitClient.getInstance().getRetrofitApi();
         }
@@ -28,12 +29,14 @@ public class NetworkLayerImpl implements NetworkLayer {
                 if(response.isSuccessful()){
                     CountryDataBean countryDataBean = response.body().get(0);
                     Log.i(TAG, "onResponse: data received "+countryDataBean.getCapital());
+                    onCountryDetailsFetchedListener.countryDataFetched(countryDataBean);
                 }
             }
 
             @Override
             public void onFailure(Call<List<CountryDataBean>> call, Throwable t) {
                 Log.i(TAG, "onFailure: data not received. Try later. "+t.getMessage());
+                onCountryDetailsFetchedListener.countryDataFetched(null);
             }
         });
 
@@ -61,7 +64,7 @@ public class NetworkLayerImpl implements NetworkLayer {
 
             @Override
             public void onFailure(Call<List<CountryDataBean>> call, Throwable t) {
-
+                    onRegionDataFetchedListener.regionDataFetched(null);
             }
         });
     }

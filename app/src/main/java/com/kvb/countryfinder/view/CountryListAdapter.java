@@ -8,10 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kvb.countryfinder.R;
 import com.kvb.countryfinder.model.CountryDataBean;
+import com.kvb.countryfinder.network.NetworkLayer;
+import com.kvb.countryfinder.network.NetworkLayerImpl;
 
 import java.util.List;
 
@@ -19,11 +22,12 @@ public class CountryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private Context mContext;
     private List<CountryDataBean> mAdapterData;
-
+    private NetworkLayer mNetworkLayer;
 
     public CountryListAdapter(Context context, List<CountryDataBean> countryDataBeanList) {
         mContext = context;
         mAdapterData = countryDataBeanList;
+        mNetworkLayer = new NetworkLayerImpl();
     }
 
     @NonNull
@@ -49,13 +53,30 @@ public class CountryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return mAdapterData == null ? 0 : mAdapterData.size();
     }
 
-    private class CountryViewHolder extends RecyclerView.ViewHolder {
+    private class CountryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, OnCountryDetailsFetchedListener {
         private ImageView flag;
         private TextView countryName;
         public CountryViewHolder(View view) {
             super(view);
             flag = view.findViewById(R.id.country_flag);
             countryName = view.findViewById(R.id.country_name);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            String country = countryName.getText().toString();
+            mNetworkLayer.fetchCountrySpecificData(country, this);
+        }
+
+        @Override
+        public void countryDataFetched(CountryDataBean countryDataBean) {
+            //open another fragment with details
+            if(countryDataBean != null) {
+                Toast.makeText(mContext, "country capital is " + countryDataBean.getCapital(), Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(mContext, "Failed to fetch data", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

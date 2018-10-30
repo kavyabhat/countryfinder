@@ -12,18 +12,19 @@
         android:id="@+id/region_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif"
         android:text="Choose A Region"
         android:textSize="30dp"
-        android:fontFamily="sans-serif"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--probably a search view here-->
     <!--need to use fragments here-->
     <!--Grid layout-->
-<!--    <GridLayout
+    <!--    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:rowCount="3"
@@ -66,4 +67,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/region_heading" />
+
+    <TextView
+        android:id="@+id/no_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No countries found"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 </android.support.constraint.ConstraintLayout>

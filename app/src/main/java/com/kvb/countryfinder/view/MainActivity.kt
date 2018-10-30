@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import com.kvb.countryfinder.R
 import com.kvb.countryfinder.model.CountryDataBean
 import com.kvb.countryfinder.utils.RegionConstants
@@ -117,13 +118,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //        FragmentManager fragmentManager = getSupportFragmentManager();
         //        fragmentManager.beginTransaction().add(new CountryListFragment()).addToBackStack(null).commit();
 
-        val countryListAdapter = CountryListAdapter(this, countryDataBeanList)
+        val regionHeading = findViewById<TextView>(R.id.region_heading)
         val recyclerView = findViewById<RecyclerView>(R.id.region_rv)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = countryListAdapter
+        val noContentView = findViewById<TextView>(R.id.no_content)
+        if(countryDataBeanList != null) {
+            regionHeading.text = "Select a country"
+            val countryListAdapter = CountryListAdapter(this, countryDataBeanList)
+            recyclerView.layoutManager = LinearLayoutManager(this)
+            recyclerView.adapter = countryListAdapter
+            noContentView.visibility = View.GONE
+            regionHeading.visibility = View.VISIBLE
+            recyclerView.visibility = View.VISIBLE
+        }else{
+            noContentView.visibility = View.VISIBLE
+            regionHeading.visibility = View.GONE
+            recyclerView.visibility = View.GONE
+        }
     }
 
     companion object {
         private val TAG = "MainActivity"
     }
 }
+
+
+//TODO add to db via room since list of countries is not something that changes dynamically
+//TODO need to convert rv  to proper fragment container
