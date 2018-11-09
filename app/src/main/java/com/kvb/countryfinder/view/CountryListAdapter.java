@@ -1,7 +1,9 @@
 package com.kvb.countryfinder.view;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,6 +76,12 @@ public class CountryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             //open another fragment with details
             if(countryDataBean != null) {
                 Toast.makeText(mContext, "country capital is " + countryDataBean.getCapital(), Toast.LENGTH_SHORT).show();
+                CountryDetailsFragment countryDetailsFragment = new CountryDetailsFragment();
+                Bundle args = new Bundle();
+                args.putSerializable("country_detail", countryDataBean);
+                countryDetailsFragment.setArguments(args);
+                FragmentManager fragmentManager = ((MainActivity) mContext).getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container , countryDetailsFragment, "Details").addToBackStack(null).commit();
             }else{
                 Toast.makeText(mContext, "Failed to fetch data", Toast.LENGTH_SHORT).show();
             }
