@@ -8,21 +8,14 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
+import android.widget.FrameLayout
 import com.kvb.countryfinder.R
-import com.kvb.countryfinder.model.CountryDataBean
-import com.kvb.countryfinder.utils.RegionConstants
-import java.util.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRegionDataFetchedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +23,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
+        val fragmentContainer = findViewById<FrameLayout>(R.id.fragment_container)
+        if(fragmentContainer != null){
+            //instantiate fragment
+            val regionFragment = RegionFragment.newInstance()
+            supportFragmentManager.beginTransaction().add(R.id.fragment_container, regionFragment, "REGION").addToBackStack(null).commit()
+
+        }
         val fab = findViewById<View>(R.id.fab) as FloatingActionButton
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -44,18 +44,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
-
-        val regionList = ArrayList<String>()
-        regionList.add(RegionConstants.Africa.toString())
-        regionList.add(RegionConstants.Americas.toString())
-        regionList.add(RegionConstants.Asia.toString())
-        regionList.add(RegionConstants.Europe.toString())
-        regionList.add(RegionConstants.Oceania.toString())
-
-        val regionGridAdapter = RegionGridAdapter(this, regionList, this)
-        val recyclerView = findViewById<RecyclerView>(R.id.region_rv)
-        recyclerView.layoutManager = GridLayoutManager(this, 2)
-        recyclerView.adapter = regionGridAdapter
 
         //        NetworkLayer networkLayer = new NetworkLayerImpl();
         //        networkLayer.fetchCountrySpecificData("india");
@@ -113,28 +101,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun regionDataFetched(countryDataBeanList: List<CountryDataBean>) {
-        Log.i(TAG, "regionDataFetched: show country list now. Better open another fragment")
-        //        FragmentManager fragmentManager = getSupportFragmentManager();
-        //        fragmentManager.beginTransaction().add(new CountryListFragment()).addToBackStack(null).commit();
-
-        val regionHeading = findViewById<TextView>(R.id.region_heading)
-        val recyclerView = findViewById<RecyclerView>(R.id.region_rv)
-        val noContentView = findViewById<TextView>(R.id.no_content)
-        if(countryDataBeanList != null) {
-            regionHeading.text = "Select a country"
-            val countryListAdapter = CountryListAdapter(this, countryDataBeanList)
-            recyclerView.layoutManager = LinearLayoutManager(this)
-            recyclerView.adapter = countryListAdapter
-            noContentView.visibility = View.GONE
-            regionHeading.visibility = View.VISIBLE
-            recyclerView.visibility = View.VISIBLE
-        }else{
-            noContentView.visibility = View.VISIBLE
-            regionHeading.visibility = View.GONE
-            recyclerView.visibility = View.GONE
-        }
-    }
 
     companion object {
         private val TAG = "MainActivity"

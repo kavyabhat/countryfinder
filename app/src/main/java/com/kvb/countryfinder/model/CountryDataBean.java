@@ -3,10 +3,11 @@ package com.kvb.countryfinder.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class CountryDataBean {
+public class CountryDataBean implements Serializable {
 
     @SerializedName("alpha2Code")
     private String mAlpha2Code;
